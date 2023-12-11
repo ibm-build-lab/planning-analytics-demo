@@ -69,7 +69,7 @@ async def execute_singleDate_mdx(request :SingleRequest)->AnalyzedSingleRequest:
     userOutletCode = request.outletCode
     userProductCode = request.productCode
     
-    # Hardcode Example    
+    # Hardcode Example (no need to uncomment)  
     # single_mdx_query = "SELECT {([orderdate].[01/02/2023], [outletcode].[OUTLETBKS1], [productcode].[PRODUCTB1])} ON 0 FROM [SmartfrenCube]"
     single_mdx_query = "SELECT {{([orderdate].[{}], [outletcode].[{}], [productcode].[{}])}} ON 0 FROM [{}]".format(
         userOrderDate, userOutletCode, userProductCode, userCubeName
@@ -79,7 +79,7 @@ async def execute_singleDate_mdx(request :SingleRequest)->AnalyzedSingleRequest:
     # UNCOMMENT AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
     # result = tm1.cubes.cells.execute_mdx_dataframe_pivot(single_mdx_query, cube_name)
 
-    # Hardcode Example    
+    # Hardcode Example (no need to uncomment)  
     # value = result.loc[('Values', ('01/02/2023', 'OUTLETBKS1', 'PRODUCTB1'))]
 
     # UNCOMMENT AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
@@ -87,7 +87,7 @@ async def execute_singleDate_mdx(request :SingleRequest)->AnalyzedSingleRequest:
 
     # REMOVE AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
     value = float(50)
-    
+
     return AnalyzedSingleRequest(value=value)
 
 @app.post("/multiDateQuery")
