@@ -64,20 +64,30 @@ def read_root():
 
 @app.post("/singleDateQuery")
 async def execute_singleDate_mdx(request :SingleRequest)->AnalyzedSingleRequest: #
-    print(f"Received data: {request.dict()}")
     userCubeName = request.cubeName
     userOrderDate = request.orderDate
     userOutletCode = request.outletCode
     userProductCode = request.productCode
     
-    print(request)
+    # Hardcode Example    
+    # single_mdx_query = "SELECT {([orderdate].[01/02/2023], [outletcode].[OUTLETBKS1], [productcode].[PRODUCTB1])} ON 0 FROM [SmartfrenCube]"
+    single_mdx_query = "SELECT {{([orderdate].[{}], [outletcode].[{}], [productcode].[{}])}} ON 0 FROM [{}]".format(
+        userOrderDate, userOutletCode, userProductCode, userCubeName
+    )
 
+    print(single_mdx_query)
+    # UNCOMMENT AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
+    # result = tm1.cubes.cells.execute_mdx_dataframe_pivot(single_mdx_query, cube_name)
 
-    single_mdx_query = "SELECT {([orderdate].[01/02/2023], [outletcode].[OUTLETBKS1], [productcode].[PRODUCTB1])} ON 0 FROM [SmartfrenCube]"
-    result = tm1.cubes.cells.execute_mdx_dataframe_pivot(single_mdx_query, cube_name)
+    # Hardcode Example    
+    # value = result.loc[('Values', ('01/02/2023', 'OUTLETBKS1', 'PRODUCTB1'))]
+
+    # UNCOMMENT AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
+    # value = result.loc[('Values', (userOrderDate, userOutletCode, userProductCode))]
+
+    # REMOVE AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
+    value = float(50)
     
-    value = result.loc[('Values', ('01/02/2023', 'OUTLETBKS1', 'PRODUCTB1'))]
-
     return AnalyzedSingleRequest(value=value)
 
 @app.post("/multiDateQuery")
@@ -108,13 +118,16 @@ if __name__ == '__main__' or 'uvicorn' in sys.argv[0]:
 
     
     try:
-        with TM1Service(address=tm1_credentials["address"], port=tm1_credentials["port"], user=tm1_credentials["user"], password=tm1_credentials["password"], ssl=tm1_credentials["ssl"], namespace=tm1_credentials["namespace"]) as tm1:
-            cube_name = 'SmartfrenCube'
-            cubeService = tm1.cubes.cells.get_cube_service()
-            cubeData = cubeService.get(cube_name='SmartfrenCube')
-            viewData = tm1.views.get_all(cube_name)
-            dimensionData = cubeService.get_dimension_names(cube_name='SmartfrenCube')
-            data = tm1.cubes.cells.execute_view_dataframe_pivot(cube_name, view_name='SmartfrenCube', private=False)
+        # UNCOMMENT AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
+        # with TM1Service(address=tm1_credentials["address"], port=tm1_credentials["port"], user=tm1_credentials["user"], password=tm1_credentials["password"], ssl=tm1_credentials["ssl"], namespace=tm1_credentials["namespace"]) as tm1:
+        #     cube_name = 'SmartfrenCube'
+        #     cubeService = tm1.cubes.cells.get_cube_service()
+        #     cubeData = cubeService.get(cube_name='SmartfrenCube')
+        #     viewData = tm1.views.get_all(cube_name)
+        #     dimensionData = cubeService.get_dimension_names(cube_name='SmartfrenCube')
+        #     data = tm1.cubes.cells.execute_view_dataframe_pivot(cube_name, view_name='SmartfrenCube', private=False)
+
+
             # print(dir(tm1))
             # print(dir(tm1.cubes))
             # print(dir(tm1.cubes.cells))
@@ -126,8 +139,8 @@ if __name__ == '__main__' or 'uvicorn' in sys.argv[0]:
             # result1 = tm1.cubes.cells.execute_mdx_dataframe_pivot(multi_mdx_query, cube_name)
             # result2 = tm1.cubes.cells.execute_mdx_dataframe_pivot(single_mdx_query, cube_name)
             
-            if'uvicorn' not in sys.argv[0]:
-                uvicorn.run(app, host='0.0.0.0', port=8000)
+        if'uvicorn' not in sys.argv[0]:
+            uvicorn.run(app, host='0.0.0.0', port=8000)
 
     except Exception as e:
         print(f"Error connecting to TM1 API: {e}")
