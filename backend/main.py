@@ -86,9 +86,16 @@ async def execute_singleDate_mdx(request :SingleRequest)->AnalyzedSingleRequest:
     # value = result.loc[('Values', (userOrderDate, userOutletCode, userProductCode))]
 
     # REMOVE AFTER TM1 CONNECTION HAS BEEN ESTABLISHED
-    value = float(50)
+    if userProductCode == "PRODUCTA1":
+        value = float(50)
+    elif userProductCode == "PRODUCTB1":
+        value = float(25)
+    else:
+        value = float(110)
+    
 
     return AnalyzedSingleRequest(value=value)
+
 
 @app.post("/multiDateQuery")
 async def execute_multiDate_mdx(request :MultiRequest)->AnalyzedMultiRequest:
@@ -99,16 +106,42 @@ async def execute_multiDate_mdx(request :MultiRequest)->AnalyzedMultiRequest:
 
     print(request)
 
-    multi_mdx_query = "SELECT {[orderdate].[01/02/2023], [orderdate].[01/03/2023], [orderdate].[01/04/2023], [orderdate].[01/08/2023]} ON 0, {[outletcode].[OUTLETBKS1]} ON 1, {[productcode].[PRODUCTB1]} ON 2 FROM [SmartfrenCube]"
-    result = tm1.cubes.cells.execute_mdx_dataframe_pivot(multi_mdx_query, cube_name)
+    multi_mdx_query = "SELECT {{([orderdate].[{}], [orderdate].[{}], [orderdate].[{}], [orderdate].[{}] ON 0, [outletcode].[{}] ON 1, [productcode].[{}])}} ON 2 FROM [{}]".format(
+        userOrderDates[0].orderDate, userOrderDates[1].orderDate, userOrderDates[2].orderDate, userOrderDates[3].orderDate, userOutletCode, userProductCode, userCubeName
+    )
 
-    outlet_row = result.loc['OUTLETBKS1']
-    data = []
-    for (category, date), value in outlet_row.items():
-        date_value_obj = {"date": date, "value": value}
-        print(f"Value for {date}: {value}")
-        data.append(date_value_obj)
+    # multi_mdx_query = "SELECT {[orderdate].[01/02/2023], [orderdate].[01/03/2023], [orderdate].[01/04/2023], [orderdate].[01/08/2023]} ON 0, {[outletcode].[OUTLETBKS1]} ON 1, {[productcode].[PRODUCTB1]} ON 2 FROM [SmartfrenCube]"
+    # result = tm1.cubes.cells.execute_mdx_dataframe_pivot(multi_mdx_query, cube_name)
 
+    # outlet_row = result.loc['OUTLETBKS1']
+    # data = []
+    # for (category, date), value in outlet_row.items():
+    #     date_value_obj = {"date": date, "value": value}
+    #     print(f"Value for {date}: {value}")
+    #     data.append(date_value_obj)
+
+    # REMOVE AFTER TM1 CONNECTION HAS BEEN ESTABLISHED. For a time being returning dummy values
+    if userProductCode == "PRODUCTA1":
+        data = [
+            {'date' : "01/02/2023", 'value': 20},
+            {'date' : "01/03/2023", 'value': 30},
+            {'date' : "01/04/2023", 'value': 40},
+            {'date' : "01/08/2023", 'value': 80},
+        ]
+    elif userProductCode == "PRODUCTB1":
+        data = [
+            {'date' : "01/02/2023", 'value': 100},
+            {'date' : "01/03/2023", 'value': 50},
+            {'date' : "01/04/2023", 'value': 80},
+            {'date' : "01/08/2023", 'value': 30},
+        ]
+    else:
+        data = [
+            {'date' : "01/02/2023", 'value': 5},
+            {'date' : "01/03/2023", 'value': 10},
+            {'date' : "01/04/2023", 'value': 15},
+            {'date' : "01/08/2023", 'value': 20},
+        ]
     return AnalyzedMultiRequest(values=data)
 
 
@@ -128,16 +161,16 @@ if __name__ == '__main__' or 'uvicorn' in sys.argv[0]:
         #     data = tm1.cubes.cells.execute_view_dataframe_pivot(cube_name, view_name='SmartfrenCube', private=False)
 
 
-            # print(dir(tm1))
-            # print(dir(tm1.cubes))
-            # print(dir(tm1.cubes.cells))
+        #     print(dir(tm1))
+        #     print(dir(tm1.cubes))
+        #     print(dir(tm1.cubes.cells))
 
-            # Trying mdx
-            # multi_mdx_query = "SELECT {[orderdate].[01/02/2023], [orderdate].[01/03/2023], [orderdate].[01/04/2023], [orderdate].[01/08/2023]} ON 0, {[outletcode].[OUTLETBKS1]} ON 1, {[productcode].[PRODUCTB1]} ON 2 FROM [SmartfrenCube]"
-            # single_mdx_query = "SELECT {([orderdate].[01/02/2023], [outletcode].[OUTLETBKS1], [productcode].[PRODUCTB1])} ON 0 FROM [SmartfrenCube]"
-            # # Execute MDX query
-            # result1 = tm1.cubes.cells.execute_mdx_dataframe_pivot(multi_mdx_query, cube_name)
-            # result2 = tm1.cubes.cells.execute_mdx_dataframe_pivot(single_mdx_query, cube_name)
+        #     # Trying mdx
+        #     multi_mdx_query = "SELECT {[orderdate].[01/02/2023], [orderdate].[01/03/2023], [orderdate].[01/04/2023], [orderdate].[01/08/2023]} ON 0, {[outletcode].[OUTLETBKS1]} ON 1, {[productcode].[PRODUCTB1]} ON 2 FROM [SmartfrenCube]"
+        #     single_mdx_query = "SELECT {([orderdate].[01/02/2023], [outletcode].[OUTLETBKS1], [productcode].[PRODUCTB1])} ON 0 FROM [SmartfrenCube]"
+        #     # Execute MDX query
+        #     result1 = tm1.cubes.cells.execute_mdx_dataframe_pivot(multi_mdx_query, cube_name)
+        #     result2 = tm1.cubes.cells.execute_mdx_dataframe_pivot(single_mdx_query, cube_name)
             
         if'uvicorn' not in sys.argv[0]:
             uvicorn.run(app, host='0.0.0.0', port=8000)

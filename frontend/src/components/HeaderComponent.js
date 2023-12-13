@@ -1,5 +1,5 @@
 import React from "react";
-import { HeaderName, Header } from "@carbon/react";
+import { HeaderName, Header, Link, HeaderNavigation, HeaderMenuItem } from "@carbon/react";
 
 const HeaderComponent = () => {
   return (
@@ -7,6 +7,10 @@ const HeaderComponent = () => {
       <HeaderName href="#" prefix="IBM">
         Planning Analytic API Demo
       </HeaderName>
+      <HeaderNavigation aria-label="IBM [Platform]">
+        <HeaderMenuItem href="/">Single Date Query</HeaderMenuItem>
+        <HeaderMenuItem href="/multiDateComponent">Multi Date Query</HeaderMenuItem>
+      </HeaderNavigation>
     </Header>
   );
 };
