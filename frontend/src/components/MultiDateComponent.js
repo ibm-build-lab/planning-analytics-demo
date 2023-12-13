@@ -89,44 +89,46 @@ class MultiDateComponent extends Component {
   fetchQtyToTransferData = async () => {
     try {
       const { rows } = this.state;
-      const updatedRows = await Promise.all(
-        rows.map(async (row, index) => {
-          const response = await fetch('http://localhost:8000/multiDateQuery', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.state.formData)
-          });
-          // Assume the fetched data has a 'qtyToTransfer' property
-          const rowData = await response.json();
-          
-          return { 
-            ...row, 
-            product: this.state.formData.productCode,
-            qtyToTransfer: rowData.values[index].value,
-            date: rowData.values[index].date
-          };
-        })
-      );
 
-      this.setState({ rows: updatedRows }, () => {
-        // Call updateValues after the state has been updated
-        updatedRows.forEach((_, index) => {
-          this.updateValues(index);
-        });
+      // Make a single API call to fetch all values
+      const response = await fetch('http://localhost:8000/multiDateQuery', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.state.formData)
       });
+
+      const result = await response.json();
+
+      if (result && result.values) {
+        const updatedRows = rows.map((row, index) => {
+          const rowData = result.values[index];
+
+          // Update each row with the corresponding date and value
+          return {
+            ...row,
+            product: this.state.formData.productCode,
+            qtyToTransfer: rowData.value,
+            date: rowData.date
+          };
+        });
+
+        this.setState({ rows: updatedRows }, () => {
+          // Call updateValues after the state has been updated
+          updatedRows.forEach((_, index) => {
+            this.updateValues(index);
+          });
+        });
+      } else {
+        console.error('Invalid API response:', result);
+      }
+
+      
     } catch (error) {
       console.error('There was an error with the request:', error);
     }
   }
-
-  // This takes a product, updates the row value and then calls the API
-  // to grab its value from the DB. It then updates the values in the table
-  // based on the value obtained.
-  handleMultiQueryPOST = async (product) => {
-    this.fetchQtyToTransferData();
-  };
 
   // This function handles the warehouse/outlet code to the API body
   handleWarehouseSelect = (event) => {
@@ -150,7 +152,8 @@ class MultiDateComponent extends Component {
       },
       },
       () => {
-        this.handleMultiQueryPOST(event.target.value);
+        console.log("I'm happening")
+        this.fetchQtyToTransferData();
       }
     );
   }
