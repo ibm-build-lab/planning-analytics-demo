@@ -17,7 +17,7 @@ class SingleDateComponent extends Component {
       super(props);
       this.state = {
         formData: {
-          cubeName: 'SmartfrenCube',
+          cubeName: 'smartfren_cube',
           orderDate: '01/02/2023',
           outletCode: 'OUTLETBKS1',
           productCode: 'PRODUCTA1',
@@ -77,9 +77,12 @@ class SingleDateComponent extends Component {
             });
             // Assume the fetched data has a 'qtyToTransfer' property
             const rowData = await response.json();
-            
+
             // Update the 'qtyToTransfer' property in the row
-            return { ...row, qtyToTransfer: rowData.value };
+            return { 
+              ...row, 
+              qtyToTransfer: rowData.value === null ? 0 : rowData.value 
+            };
           })
         );
   
@@ -120,9 +123,10 @@ class SingleDateComponent extends Component {
         const data = await response.json();
         
         const updatedRows = [...rows];
+
         updatedRows[index] = {
           ...updatedRows[index],
-          qtyToTransfer: data.value
+          qtyToTransfer: data.value === null ? 0 : data.value
         };
     
         // Update the state with the modified row
@@ -144,7 +148,11 @@ class SingleDateComponent extends Component {
           ...formData,
           outletCode: event.target.value,
         },
-      });
+        },
+        () => {
+          this.fetchQtyToTransferData();
+        }
+      );
     };
   
     // function to handle the product select within the table. This will also call the 

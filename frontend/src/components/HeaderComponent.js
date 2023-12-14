@@ -1,5 +1,5 @@
 import React from "react";
-import { HeaderName, Header, Link, HeaderNavigation, HeaderMenuItem } from "@carbon/react";
+import { HeaderName, Header, HeaderNavigation, HeaderMenuItem } from "@carbon/react";
 
 const HeaderComponent = () => {
   return (
