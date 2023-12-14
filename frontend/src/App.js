@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Content, Theme } from '@carbon/react';
 import HeaderComponent from "./components/HeaderComponent";
 import "./App.scss";
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import SingleDateComponent from "./components/SingleDateComponent";
 import MultiDateComponent from "./components/MultiDateComponent";
 

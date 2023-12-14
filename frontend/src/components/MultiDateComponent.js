@@ -17,20 +17,20 @@ class MultiDateComponent extends Component {
     super(props);
     this.state = {
       formData: {
-        cubeName: 'SmartfrenCube',
+        cubeName: 'smartfren_cube',
         orderDates:
           [
             {
-              orderDate: "01/02/2023",
+              orderDate: "02/01/2023",
             },
             {
-              orderDate: "01/03/2023",
+              orderDate: "03/01/2023",
             },
             {
-              orderDate: "01/04/2023",
+              orderDate: "04/01/2023",
             },
             {
-              orderDate: "01/08/2023",
+              orderDate: "05/01/2023"
             }
           ],
         outletCode: 'OUTLETBKS1',
@@ -46,7 +46,7 @@ class MultiDateComponent extends Component {
           srcAfterTransferQty: 400,
           destAfterTransferQty: 800,
           product: 'PRODUCTA1',
-          date: '01/02/2023'
+          date: '02/01/2023'
         },
         {
           srcExistingQty: 800,
@@ -55,7 +55,7 @@ class MultiDateComponent extends Component {
           srcAfterTransferQty: 400,
           destAfterTransferQty: 800,
           product: 'PRODUCTA1',
-          date: '01/02/2023'
+          date: '02/01/2023'
         },
         {
           srcExistingQty: 800,
@@ -64,7 +64,7 @@ class MultiDateComponent extends Component {
           srcAfterTransferQty: 400,
           destAfterTransferQty: 800,
           product: 'PRODUCTA1',
-          date: '01/02/2023'
+          date: '02/01/2023'
         },
         {
           srcExistingQty: 800,
@@ -73,7 +73,7 @@ class MultiDateComponent extends Component {
           srcAfterTransferQty: 400,
           destAfterTransferQty: 800,
           product: 'PRODUCTA1',
-          date: '01/02/2023'
+          date: '02/01/2023'
         }
       ]
     };
@@ -109,7 +109,7 @@ class MultiDateComponent extends Component {
           return {
             ...row,
             product: this.state.formData.productCode,
-            qtyToTransfer: rowData.value,
+            qtyToTransfer: rowData.value === null ? 0 : rowData.value ,
             date: rowData.date
           };
         });
@@ -138,7 +138,11 @@ class MultiDateComponent extends Component {
         ...formData,
         outletCode: event.target.value,
       },
-    });
+      },
+      () => {
+        this.fetchQtyToTransferData();
+      }
+    );
   };
 
   // function to handle the product select within the table. This will also call the 
@@ -152,7 +156,6 @@ class MultiDateComponent extends Component {
       },
       },
       () => {
-        console.log("I'm happening")
         this.fetchQtyToTransferData();
       }
     );

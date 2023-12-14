@@ -1,3 +1,5 @@
+import fetch from "node-fetch";
+
 class TM1ApiClient {
     constructor(apiUrl, token) {
         this.apiUrl = apiUrl;
@@ -20,6 +22,15 @@ class TM1ApiClient {
   
     async executeMDXQuery(mdxQuery) {
         try {
+
+            let reqData = {
+                "MDX": mdxQuery
+            }
+
+            console.log("")
+            console.log(JSON.stringify(reqData))
+            console.log("")
+            
             const response = await fetch(`${this.apiUrl}/api/v1/ExecuteMDX`, {
             method: 'POST',
             headers: {
@@ -27,9 +38,7 @@ class TM1ApiClient {
                 'WWW-Authenticate': 'Basic Realm="TM1"',
                 'Authorization': this.token
             },
-            body: JSON.stringify({
-                MDX: mdxQuery,
-            }),
+            body: JSON.stringify(reqData)
             });
 
             const result = await response.json();
