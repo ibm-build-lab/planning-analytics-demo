@@ -11,9 +11,11 @@ Copy the `application.properties.example` as `application.properties` and fill i
 
 ## Build the Project
 
-Build the project by running: `mvn clean install`.
+Change your directory to the `spring-boot-app` and then build the project by running: `mvn clean install`.
 
 ## Running the server locally
+
+If you haven't done so, change your directory to the `spring-boot-app`.
 
 You can run the server with `mvn spring-boot:run`.
 
