@@ -1,0 +1,7 @@
+spring-boot-app/src/main/resources/application.properties
+
+target/
+bin/
+*.class
+
+.DS_Store

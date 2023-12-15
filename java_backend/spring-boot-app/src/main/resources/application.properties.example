@@ -1,0 +1,7 @@
+server.address=0.0.0.0
+server.port=8000
+tm1.api.address=_do not add http(s)://_
+tm1.api.port=
+tm1.api.username=
+tm1.api.password=
+tm1.api.namespace=
