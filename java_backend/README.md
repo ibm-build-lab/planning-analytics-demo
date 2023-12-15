@@ -3,7 +3,6 @@
 ## Pre-Reqs
 - Java 8 (java -version : 1.8)
 - maven
-- 
 
 ## application.properties file setup
 
